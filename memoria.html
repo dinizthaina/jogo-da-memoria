@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Jogo da Memória - Mar e Lua</title>
+  <style>
+    /* 🎨 ESTILO GERAL DO BODY */
+    body {
+      font-family: 'Arial', sans-serif; /* Fonte usada no jogo */
+      background-image: url(https://w.wallhaven.cc/full/47/wallhaven-47rzm9.jpg);
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-attachment: fixed;
+      color: #001f3f;
+    }
+
+    /* 🌟 TÍTULO DO JOGO */
+    h1 {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 2em;
+      color: white;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    /* 🧩 ÁREA DO TABULEIRO DE CARTAS */
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr); /* Número de colunas e largura mínima das cartas */
+      gap: 10px; /* Espaço entre as cartas */
+      max-width: 300px; /* Largura máxima do tabuleiro */
+      margin: 0 auto 20px;
+    }
+
+    /* 🃏 ESTILO DE CADA CARTA */
+    .card {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1; /* Mantém as cartas quadradas */
+      background-color: #001831; /* Cor do verso da carta */
+      border-radius: 8px; /* Cantos arredondados */
+      border: 2px solid #1c668b; /* Cor da borda */
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* 📷 ESTILO DAS FOTOS NAS CARTAS */
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* A imagem preenche a carta mantendo proporção */
+      display: none; /* Fica invisível até virar a carta */
+    }
+
+    /* 🔄 CARTA VIRADA */
+    .card.flipped img {
+      display: block; /* Mostra a imagem ao virar */
+    }
+
+    /* ❤️ ÍCONE NO VERSO DAS CARTAS */
+    .card::before {
+      content: ""; /* Ícone visível antes de virar */
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); /* Centraliza no meio da carta */
+      background-image: url('imagens/estrela.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: 1;
+      transition: opacity 0.3s;
+    }
+
+    .card.flipped::before {
+      opacity: 0; /* Some com o ícone quando a carta vira */
+    }
+
+    /* ✨ MENSAGEM FINAL */
+    #message {
+      font-size: 18px;
+      margin-top: 20px;
+      color: #00ffcc; /* Cor do texto da mensagem final */
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /* 🔁 BOTÃO DE REINICIAR */
+    button {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 1em;
+      background-color: #00aaffcc; /* Cor de fundo do botão */
+      color: #001f3f; /* Cor do texto do botão */
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px #00000055;
+      transition: background-color 0.3s ease;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* 📱 ESTILO RESPONSIVO PARA CELULAR */
+    @media (max-width: 500px) {
+      h1 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Jogo da Memória 🌙💙</h1>
+
+  <div class="game-board" id="game-board"></div>
+  <div id="message"></div>
+  <button onclick="restartGame()">Recomeçar</button>
+
+  <script>
+    // 📸 AQUI VOCÊ DEFINE OS CAMINHOS DAS SUAS 7 FOTOS DIFERENTES
+    const imagePaths = [
+      'imagens/foto1.jpg',
+      'imagens/foto2.jpg',
+      'imagens/foto3.jpg',
+      'imagens/foto4.jpg',
+      'imagens/foto5.jpg',
+      'imagens/foto6.jpg',
+      'imagens/foto7.jpg',
+      'imagens/foto8.jpg',
+      'imagens/foto9.jpg',
+      'imagens/foto10.jpg',
+      'imagens/foto11.jpg',
+      'imagens/foto12.jpg',
+      'imagens/foto13.jpg',
+      'imagens/foto14.jpg',
+    ];
+
+    let firstCard = null;
+    let lockBoard = false;
+    let matchedPairs = 0;
+
+    function shuffle(array) {
+      return array.sort(() => 0.5 - Math.random());
+    }
+
+    function createCard(src) {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'Foto do casal';
+
+      card.appendChild(img);
+
+      card.addEventListener('click', () => {
+        if (lockBoard || card.classList.contains('flipped')) return;
+
+        card.classList.add('flipped');
+
+        if (!firstCard) {
+          firstCard = card;
+        } else {
+          const firstImg = firstCard.querySelector('img').src;
+          const secondImg = img.src;
+
+          if (firstImg === secondImg) {
+            matchedPairs++;
+            firstCard = null;
+
+            // ✍️ MENSAGEM DE VITÓRIA
+            if (matchedPairs === imagePaths.length) {
+              document.getElementById("message").textContent = 
+                "✨ Você encontrou todos os pares! ✨";
+            }
+
+          } else {
+            lockBoard = true;
+            setTimeout(() => {
+              card.classList.remove('flipped');
+              firstCard.classList.remove('flipped');
+              firstCard = null;
+              lockBoard = false;
+            }, 1000);
+          }
+        }
+      });
+
+      return card;
+    }
+
+    function initGame() {
+      const board = document.getElementById('game-board');
+      const message = document.getElementById('message');
+      board.innerHTML = '';
+      message.textContent = '';
+      firstCard = null;
+      lockBoard = false;
+      matchedPairs = 0;
+
+      const fullSet = shuffle([...imagePaths, ...imagePaths]);
+
+      fullSet.forEach(src => {
+        const card = createCard(src);
+        board.appendChild(card);
+      });
+    }
+
+    function restartGame() {
+      initGame();
+    }
+
+    initGame();
+  </script>
+</body>
+</html>
