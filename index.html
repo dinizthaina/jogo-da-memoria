@@ -61,7 +61,7 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      background-image: url('https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/estrela.png');
+      background-image: url('https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/estrela.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -94,7 +94,6 @@
       transition: background-color 0.3s ease;
       font-weight: bold;
       cursor: pointer;
-      margin-top: 10px;
     }
 
     @media (max-width: 500px) {
@@ -113,20 +112,20 @@
 
   <script>
     const imagePaths = [
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto1.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto2.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto3.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto4.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto5.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto6.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto7.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto8.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto9.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto10.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto11.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto12.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto13.jpg',
-      'https://raw.githubusercontent.com/dinizthaina/mar-e-lua-jogos/main/jogo-da-memoria/imagens/foto14.jpg'
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto1.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto2.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto3.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto4.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto5.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto6.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto7.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto8.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto9.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto10.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto11.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto12.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto13.jpg',
+      'https://raw.githubusercontent.com/dinizthaina/jogo-da-memoria/main/foto14.jpg'
     ];
 
     let firstCard = null;
@@ -184,22 +183,16 @@
 
     function initGame() {
       const board = document.getElementById('game-board');
-      const message = document.getElementById('message');
       board.innerHTML = '';
-      message.textContent = '';
-      firstCard = null;
-      lockBoard = false;
+      const duplicated = shuffle([...imagePaths, ...imagePaths]);
+      duplicated.forEach(src => board.appendChild(createCard(src)));
       matchedPairs = 0;
-
-      const fullSet = shuffle([...imagePaths, ...imagePaths]);
-
-      fullSet.forEach(src => {
-        const card = createCard(src);
-        board.appendChild(card);
-      });
+      document.getElementById("message").textContent = '';
     }
 
     function restartGame() {
+      firstCard = null;
+      lockBoard = false;
       initGame();
     }
 
